@@ -1,0 +1,119 @@
+
+
+<script>
+function DeleteRow(name) {
+    $(name).closest('tr').remove();
+}
+function reload(){
+  window.location.reload("/loaihang/edit");
+}
+function AddRow(name){
+  bool = true;
+  id_donvi = $(name).closest('tr').find('td:first').find('input').val();
+  donvi = $(name).closest('tr').find('td').eq(1).find('input').val();
+  kyhieu = $(name).closest('tr').find('td').eq(2).find('input').val();
+  html = '<tr>\n\
+              <input name="list[][id_donvi]" type="hidden" value= "'+ id_donvi +'" />\n\
+              <td align="center">'+ id_donvi +'</td>\n\
+              <td><input name="list[][donvi]" class="form-control" value="'+ donvi +'" /></td>\n\
+              <td align="center"><input name="list[][kyhieu]" class="form-control" value="'+ kyhieu +'"></td>\n\
+              <td>\n\
+                <a onclick="DeleteRow(this);" class="btn btn-danger">\n\
+                  <i class="glyphicon glyphicon-remove"></i>\n\
+                </a>\n\
+              </td>\n\
+            </tr>';
+    if (id_donvi != ''){
+      for( i=0; i < $("#table tr").length - 1; i++){
+        if ( donvi == $("#table tr").eq(i).find('td:first').text()){
+          $(name).closest('tr').find('td:first').find('input').val("");
+          $(name).closest('tr').find('td:first').find('input').attr('placeholder','Mã đã có');
+          bool = false;
+          break;
+        }
+        else
+        {
+          bool = true;
+        }
+      }
+      if (bool){
+        if (donvi != '')
+        {
+          $(name).closest('tr').before(html);
+          $(name).closest('tr').find('td:first').find('input').val("");
+          $(name).closest('tr').find('td').eq(1).find('input').val("");
+          $(name).closest('tr').find('td').eq(2).find('input').val("");
+          $(name).closest('tr').find('td').eq(1).find('input').css({'border':'#aaa solid 1px'});
+          $(name).closest('tr').find('td').eq(1).find('input').attr('placeholder','');
+        }
+        else{
+          $(name).closest('tr').find('td').eq(1).find('input').css({'border':'red solid 1px'});
+          $(name).closest('tr').find('td').eq(1).find('input').attr('placeholder','Nhập giá trị');
+        }
+        $(name).closest('tr').find('td:first').find('input').css({'border':'#aaa solid 1px'});
+        $(name).closest('tr').find('td:first').find('input').attr('placeholder','');
+      }
+    }
+    else
+    {
+      $(name).closest('tr').find('td:first').find('input').css({'border':'red solid 1px'});
+      $(name).closest('tr').find('td:first').find('input').attr('placeholder','nhập GT');
+    }
+}
+</script>
+<div class="box">
+    <header>
+        <div class="icons"><a href="/donvi" class="btn btn-primary"><i class="glyphicon glyphicon-chevron-left"></i>Trở lại</a></div>
+        <h5>Loại hàng</h5>
+    </header>
+
+    <div class="body">
+        <%= form_for(@new, :url=>{:action=>'save'}) do |f| %>
+        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+            
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-sm-6">
+                    <table class="table table-bordered table-hover table-striped dataTable">
+                        <thead>
+                            <tr>
+                                <th width="15%">Mã</th>
+                                <th width="45%">Đơn vị</th>
+                                <th width="40%">Ký hiệu</th>
+                                <th width="10%">Chọn</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table">
+                            <% @list.each do |row| %>
+                            <tr>
+                                <td align="center"><%= hidden_field_tag "list[][id_donvi]", row.id_loai %><%= row.id_loai %></td>
+                                <td><%= text_field_tag "list[][donvi]", row.donvi, :class=>fieldError(row.errors[:donvi].any?,"form-control") %></td>
+                                <td><%= text_field_tag "list[][kyhieu]", row.kyhieu, :class=>fieldError(row.errors[:kyhieu].any?,"form-control") %></td>
+                                <td align="center"><a href="javacript:void(0);" class="text-danger"></td>
+                            </tr>
+                            <% end %>
+                            <tr>
+                                <td align="center"><%= f.text_field :id_donvi, :size=>"3px"%></td>
+                                <td><%= f.text_field :donvi, :class=>"form-control"%></td>
+                                <td align="center"><%= f.text_field :kyhieu, :class=>"form-control"%></td>
+                                <td align="center"><a href="javacript:void(0);" onclick="AddRow(this);" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i></td>
+                            </tr>
+                        </tbody>                
+                    </table>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <div class="col-lg-6">
+                    <button name="huy" type="button" onclick="reload();" class="btn btn-danger pull-right"><i class="glyphicon glyphicon-remove"></i>Hủy Bỏ</button>
+                </div>
+                <div class="col-lg-3">
+                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i>Lưu Lại</button>
+                </div>
+            </div>
+        </div>
+        <% end %>
+    </div>
+</div>

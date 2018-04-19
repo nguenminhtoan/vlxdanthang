@@ -1,0 +1,63 @@
+
+<script>
+function DeleteRow() {
+    if(confirm('Bạn có muốn xóa không ?'))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+}
+</script>
+
+
+<div class="box">
+    <header>
+        <div class="icons"><a href="/hanghoa/new" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>Thêm Mới</a></div>
+        <h5>Sản Phẩm</h5>
+    </header>
+
+    <div class="body">
+        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table id="dataTable" class="table table-bordered table-hover table-striped dataTable">
+                        <thead>
+                            <tr>
+                                <th width="5%">Mã</th>
+                                <th width="20%">Tên hàng</th>
+                                <th width="15%">Loại</th>
+                                <th width="10%">Quy cách</th>
+                                <th width="8%">Đơn vị</th>
+                                <th width="10%">Giá bán</th>
+                                <th >Ghi chú</th>
+                                <th width="5%">Chọn</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table">
+                            <% @list.each do |row| %>
+                            <tr>
+                                <td align ="center"><%= row['id_hanghoa'] %></td>
+                                <td align="center"><%=row['tenhang'] %></td>
+                                <td align="center"><%=row['tenloai'] %></td>
+                                <td><%= row['thongso'] %></td>
+                                <td><%= row['donvi'] %></td>
+                                <td align="right"><%= number_to_currency(row['giaban'], :unit => 'VNĐ', :precision => 0, :format => "%n %u") %></td>
+                                <td><%= row['ghichu'] %></td>
+                                <td align ="center">
+                                    <a href="/hanghoa/edit/<%= row['id_hanghoa'] %>" class="text-success" ><i class="glyphicon glyphicon-pencil"></i></a>
+                                    <a href="/hanghoa/delete/<%= row['id_hanghoa'] %>" class="text-danger" onclick="return DeleteRow();" ><i class="glyphicon glyphicon-trash"></i></a>
+                                </td>
+                            </tr>
+                            <% end %>
+                        </tbody>                
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

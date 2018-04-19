@@ -1,0 +1,106 @@
+<script>
+function reload(){
+  window.location.reload("/nhanvien/new");
+}
+</script>
+<div class="box">
+    <header class="dark">
+        <div class="icons"><a href="/nhanvien" class="btn btn-primary"><i class="glyphicon glyphicon-chevron-left"></i>Trở Lại</a></div>
+        <h5>Thêm Nhân Viên</h5>
+    </header>
+    <div class="body">
+        
+        <%= form_for(@new, :url=>{:action=>'save'}, :html => {:class=>'form-horizontal'}) do |f| %>
+            <div class="form-group">
+                <%= f.label :id_khachhang, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.text_field :id_khachhang, :class=>fieldError(@new.errors[:id_khachhang].any?, "form-control"), :placeholder=>"Mã khách hàng" %>
+                    </div>
+                </div>
+                <span class="error right"><%=@new.errors[:id_khachhang].first%></span>
+            </div>
+            
+            <div class="form-group">
+                <%= f.label :tenkhachhang, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.text_field :tenkhachhang, :class=>fieldError(@new.errors[:tenkhachhang].any?, "form-control"), :placeholder=>"Nguyễn Văn A" %>
+                    </div>
+                </div>
+                <span class="error right"><%=@new.errors[:tenkhachhang].first%></span>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :gioitinh, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.select :gioitinh, options_for_select([["Nam",1],["Nữ",2]], @new.gioitinh),{}, :class=>'form-control' %>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :didong, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.number_field :didong, :class=>fieldError(@new.errors[:didong].any?, "form-control"), :placeholder=>"098 909 192"%>
+                    </div>
+                </div>
+                <span class="error right"><%=@new.errors[:didong].first%></span>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :sdt, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.number_field :sdt, :class=>'form-control', :placeholder=>"078 909 192" %>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :email, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.text_field :email, :class=>'form-control', :placeholder=>"email" %>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :diachi, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <%= f.text_area :diachi, :class=>'form-control', :rows => 3, :cols=> 100 %>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <%= f.label :ghichu, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <%= f.text_area :ghichu, :class=>'form-control', :rows => 5, :cols=> 100 %>
+                    </div>
+                </div>
+            </div>
+        
+        
+            <div class="form-group">
+                <div class="col-lg-6">
+                    <button type="button" onclick="reload();" class="btn btn-danger pull-right"><i class="glyphicon glyphicon-remove"></i>Hủy Bỏ</button>
+                </div>
+                <div class="col-lg-3">
+                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i>Lưu Lại</button>
+                </div>
+            </div>
+        <%end%>
+    </div>
+</div>

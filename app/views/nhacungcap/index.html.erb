@@ -1,0 +1,62 @@
+
+<script>
+function DeleteRow() {
+    if(confirm('Bạn có muốn xóa không ?'))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+}
+</script>
+
+
+<div class="box">
+    <header>
+        <div class="icons"><a href="/nhacungcap/new" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>Thêm Mới</a></div>
+        <h5>Danh Mục Nhà Cung Cấp</h5>
+    </header>
+
+    <div class="body">
+        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table id="dataTable" class="table table-bordered table-hover table-striped dataTable">
+                        <thead>
+                            <tr>
+                                <th width="7%">Mã</th>
+                                <th>Tên</th>
+                                <th>Đi động</th>
+                                <th>E-Mail</th>
+                                <th>Địa chỉ</th>
+                                <th>Ghi chú</th>
+                                <th width="7%">Chọn</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table">
+                            <% @list.each do |val| %>
+                              <tr>
+                                  <td align="center"><%=val['id_cungcap']%></td>
+                                  <td><%=val['tennhacung']%></td>
+                                  <td><%=val['sdt']%></td>
+                                  <td><%=val['email']%></td>
+                                  <td><%=val['diachi']%></td>
+                                  <td><%=val['ghichu']%></td>
+                                  <td align="center">
+                                      <a href="/nhacungcap/edit/<%=val['id_cungcap']%>" class="text-success"><i class="glyphicon glyphicon-pencil"></i></a>
+                                      <a href="/nhacungcap/delete/<%=val['id_cungcap']%>" onclick="return DeleteRow();" class="text-danger"><i class="glyphicon glyphicon-trash"></i></a>
+                                  </td>
+                              </tr>
+                            <%end%>
+
+                        </tbody>                
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

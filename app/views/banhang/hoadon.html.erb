@@ -1,0 +1,49 @@
+
+<div class="box">
+    <header>
+        <div class="icons"><a href="/banhang" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>Thêm Mới Đơn Hàng</a></div>
+        <h5>Bán Hàng</h5>
+    </header>
+
+    <div class="body">
+        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-bordered table-hover table-striped dataTable">
+                        <thead>
+                            <tr>
+                                <th width="7%">Mã Hóa Đơn</th>
+                                <th>Mã Khách</th>
+                                <th>Tên Khách</th>
+                                <th>Ngày Bán</th>
+                                <th>Người Bán</th>
+                                <th>Tổng Giá</th>
+                                <th>Thanh toán</th>
+                                <th>Ghi chú</th>
+                                <th width="7%">Chọn</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table">
+                            <% @list.each do |val| %>
+                              <tr>
+                                  <td align="center"><%=val['id_ban']%></td>
+                                  <td><%=val['id_khachhang']%></td>
+                                  <td><%=val['tenkhachhang'] %></td>
+                                  <td><%=val['ngayban'] %></td>
+                                  <td><%=val['tennguoidung']%></td>
+                                  <td><%=val['thanhtien']%></td>
+                                  <td><%=val['thanhtoan']%></td>
+                                  <td><%=val['ghichu']%></td>
+                                  <td align="center">
+                                      <a href="/banhang/edit/<%=val['id_ban']%>" class="text-success"><i class="glyphicon glyphicon-pencil"></i></a>
+                                  </td>
+                              </tr>
+                            <%end%>
+
+                        </tbody>                
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

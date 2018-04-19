@@ -1,0 +1,244 @@
+<%#
+# To change this license header, choose License Headers in Project Properties.
+# To change this template file, choose Tools | Templates
+# and open the template in the editor.
+%>
+
+<div class="row">
+    <!--BEGIN SELECT        -->
+
+    <div class="col-lg-6">
+        <div class="box dark">
+            <header>
+                <h5>Hóa đơn bán hàng</h5>
+            </header>
+            <div id="div-2" class="body collapse in" aria-expanded="true" style="">
+                <%= form_for(@new, :url=>{:action=>'update'}, :html=>{:class=>"form-horizontal"}) do |f| %>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3">Mã hóa đơn</label>
+
+                        <div class="col-lg-9">
+                            <%= f.text_field :id_ban, :class=>'form-control', :readonly=>"" %>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-lg-3">Mã Khách hàng</label>
+
+                        <div class="col-lg-4">
+                            <%= f.select :id_khachhang, options_for_select(@khachhang.collect{|v| [v['id_khachhang'],v['id_khachhang'],data:{name: v['tenkhachhang']}]}, @new.id_khachhang), {:include_blank=>'- Chọn  -', :class=>"form-control"} %>
+                        </div>
+                        <div class="col-lg-3">
+                            <button class="btn btn-success">Thêm mới</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-lg-3">Tên khách hàng</label>
+
+                        <div class="col-lg-9">
+                            <input id="tenkhachhang" type="text" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-lg-3">Ghi chú</label>
+
+                        <div class="col-lg-9">
+                            <%= f.text_area :ghichu,  :size=>"5", :class=>"form-control" %>
+                        </div>
+                    </div>
+                    
+                    <style>
+                        table thead tr th {
+                            text-align: left !important;
+                        }
+                        .right, .txtright{ text-align: right;}
+                    </style>
+                    <table class="table table table-bordered table-condensed table-hover table-striped dataTable no-footer">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Mã hàng</th>
+                                <th>Tên hàng</th>
+                                <th>Giá bán</th>
+                                <th width="8%">SL</th>
+                                <th width="5%"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="order">
+                            <% @hanghoa.each.with_index(1) do |row, index| %>
+                            <tr>
+                                <td><%= index %></td>
+                                <td><%= hidden_field_tag "list[][id_hanghoa]", row['id_hanghoa'] %><%= row['id_hanghoa'] %></td>
+                                <td><%= hidden_field_tag "list[][tenhang]", row['tenhang'] %><%= row['tenhang'] %></td>
+                                <td class="txtright"><%= hidden_field_tag "list[][giaban]", row['giaban'] %><%= number_to_currency(row['giaban'] ,  :unit => '', :precision => 0, :format => "%n %u") %></td>
+                                <td><%= text_field_tag "list[][soluong]", row['soluong'], :size=>"1", :onchange=>"ChangeNumber();" %></td>
+                                <td><button onclick="DeleteRow(this)"></button></td>
+                            </tr>
+                            <% end %>
+                        </tbody>                
+                    </table>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-lg-3">Thành tiền</label>
+
+                        <div class="col-lg-6">
+                            <%= f.text_field :thanhtien, :readonly=>"", :class=>fieldError(@new.errors[:thanhtien].any?,"form-control right") %>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-lg-3">Khách trả</label>
+
+                        <div class="col-lg-6">
+                            <%= f.text_field :thanhtoan, :class=>fieldError(@new.errors[:thanhtoan].any?,"form-control right") %>
+                        </div>
+                        <div class="col-lg-3">
+                            <%= f.select :id_thanhtoan, options_for_select(@thanhtoan.collect{|v| [v['tenthanhtoan'],v['id_thanhtoan']]}),{}, :class=>fieldError(@new.errors[:id_thanhtoan].any?,"form-control right") %>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-lg-3">Tiền thối</label>
+
+                        <div class="col-lg-6">
+                            <input id="tienthoi" type="text" readonly="" class="form-control right">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-lg-3">Nợ</label>
+
+                        <div class="col-lg-6">
+                            <input type="text" id="tienno" readonly="" class="form-control right">
+                        </div>
+                        <div class="col-lg-3">
+                            <button class="btn btn-primary">lưu lại</button>
+                            <button type="button" class="btn btn-primary">In</button>
+                        </div>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="box dark">
+            <header>
+                <h5>Danh sách hàng hóa</h5>
+            </header>
+            <div id="div-1" class="body collapse in" aria-expanded="true" style="">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-lg-2">Tìm kiếm</label>
+                        <div class="col-lg-6">
+                            <input onkeyup="myFunction()" id="myInput" type="text" class="form-control" placeholder="Mã hàng, tên hàng hoặc giá bán">
+                        </div>
+                    </div>
+                    <table id="myTable" class="table table table-bordered table-condensed table-hover table-striped dataTable no-footer">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Mã hàng</th>
+                                <th>Tên hàng</th>
+                                <th>Giá bán</th>
+                                <th width="5%"></th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                            <% @list.each.with_index(1) do |row, index| %>
+                                <% unless @hanghoa.map{|v| v['id_hanghoa']}.include?(row['id_hanghoa']) %>
+                                <tr>
+                                    <td><%= index %></td>
+                                    <td><%= hidden_field_tag "list[][id_hanghoa]", row['id_hanghoa'] %><%= row['id_hanghoa'] %></td>
+                                    <td><%= hidden_field_tag "list[][tenhang]", row['tenhang'] %><%= row['tenhang'] %></td>
+                                    <td class="txtright"><%= hidden_field_tag "list[][giaban]", row['giaban'] %><%= number_to_currency(row['giaban'] ,  :unit => '', :precision => 0, :format => "%n %u") %></td>
+                                    <td><%= check_box_tag "list[][soluong]", "1", false, :size=>"1", :onchange=>"ChangeNumber();" %></td>
+                                </tr>
+                                <% end %>
+                            <% end %>
+                        </tbody>                
+                    </table>
+                    <div class="form-group">
+                        <div class="col-lg-4">
+                            <button type="button" id="add-cart" onclick="myAddCart();" class="btn btn-danger">Thêm vào hóa đơn</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--END TEXT INPUT FIELD-->
+</div>
+
+<script>
+function myFunction() {
+  var input, filter, table, tr, td, i;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    td2 = tr[i].getElementsByTagName("td")[2];
+    td3 = tr[i].getElementsByTagName("td")[3];
+    if (td) {
+      if (td.innerHTML.toUpperCase().indexOf(filter) > -1 || td2.innerHTML.toUpperCase().indexOf(filter) > -1 || td3.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+
+function DeleteRow(name){
+  var row = $(name).closest('tr').remove();
+  row.find('td:nth-child(6)').remove();
+  table = $("#myTable").append('<tr>' + row.html().replace(/text/g,'checkbox') + '</tr>')
+  $(name).closest('tr').remove();
+  var tong = 0;
+  $("#order tr").each(function(){
+    tong += Number($(this).find('td:nth-child(4) input').val())*$(this).find('td:nth-child(5) input').val();
+  });
+  $("#banhang_thanhtien").val(tong.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+}
+
+function myAddCart(){
+  var table = $("#myTable tr");
+  table.each(function(){
+    var check = $(this).find('td:nth-child(5) input');
+    if (check.is(':checked')){
+      var html = check.closest('tr').html().replace(/checkbox/g,'text');
+      html += '<td><button type="button" onclick="DeleteRow(this)"></button></td>';
+      $("#order").append('<tr>'+html+'</tr>');
+      check.closest('tr').remove();
+    }
+  });
+  var tong = 0;
+  $("#order tr").each(function(){
+    tong += Number($(this).find('td:nth-child(4) input').val())*$(this).find('td:nth-child(5) input').val();
+  });
+  $("#banhang_thanhtien").val(tong.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+}
+
+
+function ChangeNumber(){
+  var tong = 0;
+  $("#order tr").each(function(){
+    tong += Number($(this).find('td:nth-child(4) input').val())*$(this).find('td:nth-child(5) input').val();
+  });
+  $("#banhang_thanhtien").val(tong.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+}
+
+$("#banhang_id_khachhang").change(function(){
+  $("#tenkhachhang").val($(this).find("option select").data('name'));
+});
+
+$("#banhang_thanhtoan").on('change',function(){
+  $("#tienthoi").val(($("#banhang_thanhtoan").val()-Number($("#banhang_thanhtien").val().replace(",",''))).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+});
+
+</script>
