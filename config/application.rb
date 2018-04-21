@@ -11,10 +11,10 @@ module QLVLXaydung
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
 
-    config.db_host = "localhost"
-    config.db_user = "root"
-    config.db_pass = "sa2018"
-    config.db_schema = "qlvl_xaydung"
+    config.db_host = "sql10.freemysqlhosting.net"
+    config.db_user = "sql10233728"
+    config.db_pass = "4xx48Shiqt"
+    config.db_schema = "sql10233728"
     
     
     
