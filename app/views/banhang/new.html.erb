@@ -34,7 +34,7 @@
   
 </style>
 
- <%= form_for(@new, :url=>{:action=>'update'}) do |f| %>
+ <%= form_for(@new, :url=>{:action=>'save'}) do |f| %>
 <div class="row">
     <!--BEGIN SELECT        -->
     <div class="col-lg-8">
@@ -89,7 +89,7 @@
                         <label class="col-lg-12">Mã hóa đơn</label>
 
                         <div class="col-lg-12">
-                            <%= f.text_field :id_ban, :class=>fieldError(@new.errors[:id_ban].any?, "form-control"), :readonly=>"" %>
+                            <%= f.text_field :id_ban, :value=> @key, :class=>fieldError(@new.errors[:id_ban].any?, "form-control"), :readonly=>"" %>
                         </div>
                     </div>
                     
@@ -97,8 +97,7 @@
                         <label class="col-lg-12">Người Bán</label>
 
                         <div class="col-lg-12">
-                            <%= f.hidden_field :id_nguoidung %>
-                            <%= f.text_field :tennguoidung, :class=>fieldError(@new.errors[:id_nguoidung].any?, "form-control"), :readonly=>"" %>
+                            <%= text_field_tag :nguoiban, @info.tennguoidung, :class=>fieldError(@new.errors[:id_nguoidung].any?, "form-control"), :readonly=>"" %>
                         </div>
                     </div>
                     
@@ -170,8 +169,7 @@
                     
                     <div class="form-group">
                         <label class="col-lg-12">
-                            <button class="btn btn-primary">Lưu lại</button>
-                            <a class="btn btn-primary">In hóa đơn</a>
+                            <button class="btn btn-primary">Thanh Toán</button>
                         </label>
                     </div>
             </div>
