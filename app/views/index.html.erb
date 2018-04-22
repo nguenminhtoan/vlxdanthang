@@ -1,0 +1,121 @@
+<%#
+# To change this license header, choose License Headers in Project Properties.
+# To change this template file, choose Tools | Templates
+# and open the template in the editor.
+%>
+<style>
+  
+.dashboard .body{  
+    background-color:#1b80c2; padding:25px 10px 25px 10px;color:#FFF; font-size:40px;
+}
+
+.title-dashboard{
+    background-color:rgba(255,255,255,0.1); color:#FFF; padding:5px;
+}
+
+.dashboard{
+    background-color:#1b80c2; border-radius: 4px;
+}
+</style>
+
+
+<div class="box">
+    <header>
+        <h5>HOẠT ĐỘNG HÔM NAY</h5>
+    </header>
+    <div class="body">
+        <div class="dataTables_wrapper">
+            <div class="row">
+                <div class="col-lg-4">
+                  <div class="box dashboard">
+                      <div class="title-dashboard">
+                        Danh thu
+                        </div>
+                        <div class="body">
+                          <i class="glyphicon glyphicon-signal" style=" opacity:0.5;"></i>
+                            <span><%= number_to_currency(@total.map{|v| v['danhthu'].to_i}.sum , :unit => '', :precision => 0, :format => "%n %u") %></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="box dashboard">
+                      <div class="title-dashboard">
+                        Đơn hàng
+                        </div>
+                        <div class="body">
+                          <i class="glyphicon glyphicon-shopping-cart" style=" opacity:0.5;"></i>
+                            <span><%= @total.map{|v| v['donhang']}.sum %></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="box dashboard">
+                      <div class="title-dashboard">
+                        Khách hàng
+                        </div>
+                        <div class="body">
+                          <i class="glyphicon glyphicon-user" style=" opacity:0.5;"></i>
+                            <span><%= @total.count %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-7" style="padding:0px">
+    <div class="box">
+        <header>
+            <h5>BÁO CÁO TỔNG HỢP</h5>
+            <form id="InputSearch" method="POST"  >
+              <div style="text-align: right"><%= select_tag "baocao",options_for_select([["Tất cả",0],['Tuần này',1],['Tháng này',2],['Quý này',3],["Năm nay",4]]), :style=> "margin: 10px; padding 2px;" %></div>
+            </form>
+        </header>
+        <div class="body" id="trigo">
+            <table class="table table-condensed table-hovered" style="font-size:20px">
+                <tbody>
+                    <tr class="active">
+                        <td width="15%">STT</td>
+                        <td width="45%">Chỉ tiêu</td>
+                        <td align="right">Số tiền</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Tổng giá trị tồn kho</td>
+                        <td align="right"><%= number_to_currency(@tonkho , :unit => '', :precision => 0, :format => "%n %u") %></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Nợ trả cho nhà cung cấp</td>
+                        <td align="right"><%= number_to_currency(@cungcap , :unit => '', :precision => 0, :format => "%n %u") %></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Nợ thu từ khách</td>
+                        <td align="right"><%= number_to_currency(@khachhang , :unit => '', :precision => 0, :format => "%n %u") %></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Danh thu bán hàng</td>
+                        <td align="right"><%= number_to_currency(@danhthu , :unit => '', :precision => 0, :format => "%n %u") %></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Giá vốn bán hàng</td>
+                        <td align="right"><%= number_to_currency(@giavon , :unit => '', :precision => 0, :format => "%n %u") %></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>Chi phí khách</td>
+                        <td align="right"><%= number_to_currency(@chiphi , :unit => '', :precision => 0, :format => "%n %u") %></td>
+                    </tr>
+                    <tr class="success">
+                        <th colspan=2">Tổng lợi nhuận</th>
+                        <th style="text-align: right"><%= number_to_currency(@loinhuan , :unit => '', :precision => 0, :format => "%n %u") %></th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
