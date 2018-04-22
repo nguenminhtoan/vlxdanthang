@@ -3,13 +3,22 @@
 # and open the template in the editor.
 
 class Ctban < ModelBase
-  Fields = [:id_hanghoa, :id_cuahang, :id_ban, :soluong, :giaban]
+  Fields = [:id_hanghoa, :id_cuahang, :id_ban, :soluong, :giaban, :tenhang]
   
   attr_accessor *Fields
-  
+  def initialize(params={})
+    set(params)
+    @giaban = params['giaban'].to_s.gsub(/,/,'') if params[:giaban].present?
+    
+  end
+  validates :soluong,
+    :presence => {:message =>QLVLXaydung::Application.config.blank_msg}
+    
+  validates :giaban,
+    :presence => {:message =>QLVLXaydung::Application.config.blank_msg}
+    
   def self.find_id(db,id_ban)
-    sql = "SELECT ct.id_hanghoa, ct.id_cuahang, ct.id_ban, soluong, dongia as giaban, hh.tenhang FROM ct_ban ct
-           JOIN hanghoa hh ON hh.id_cuahang = ct.id_cuahang AND hh.id_hanghoa = ct.id_hanghoa
+    sql = "SELECT ct.id_hanghoa, ct.id_cuahang, ct.id_ban, soluong, dongia as giaban FROM ct_ban ct
            WHERE id_ban = ?"
     stm = db.prepare(sql)
     res = stm.execute(id_ban)

@@ -30,6 +30,7 @@ class Hanghoa < ModelBase
     sql = " SELECT #{Fields.map{|c| 'h.'<<c.to_s}.join(', ')}, donvi, tenloai FROM hanghoa h
           JOIN loaihang lh ON lh.id_loai = h.id_loai
           JOIN donvi dv ON dv.id_donvi = h.id_donvi
+          ORDER BY id_hanghoa ASC
       "
     stm = db.prepare(sql)
     res = stm.execute

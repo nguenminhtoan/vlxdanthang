@@ -3,12 +3,15 @@
 # and open the template in the editor.
 
 class Banhang < ModelBase
-  Fields = [:id_ban, :id_khachhang, :id_nguoidung, :id_thanhtoan, :ngayban, :thanhtien, :thanhtoan, :ghichu]
+  Fields = [:id_ban, :id_khachhang, :id_nguoidung, :tennguoidung, :id_thanhtoan, :ngayban, :thanhtien, :thanhtoan, :ghichu]
   
   attr_accessor *Fields
   def initialize(params={})
     set(params)
     @ngayban ||= DateTime.now
+    @thanhtien =  params['thanhtien'].present? ? params['thanhtien'].to_s.gsub(/,/,'') : 0
+    @thanhtoan =  params['thanhtoan'].present? ? params['thanhtoan'].to_s.gsub(/,/,'') : ''
+    
   end
   
   validates :id_ban,
@@ -37,7 +40,11 @@ class Banhang < ModelBase
   
   
   def self.find_id(db, id_ban)
-    sql = " SELECT id_ban, id_khachhang, id_nguoidung, id_thanhtoan, ngayban, thanhtien, thanhtoan, ghichu FROM banhang WHERE id_ban = ?"
+    sql = " SELECT bh.id_ban, bh.id_khachhang, bh.id_nguoidung, tennguoidung, bh.id_thanhtoan, ngayban, thanhtien, thanhtoan, bh.ghichu
+            FROM banhang bh
+            JOIN khachhang kh ON kh.id_khachhang = bh.id_khachhang 
+            JOIN nguoidung nd ON nd.id_nguoidung = bh.id_nguoidung
+            WHERE id_ban = ?"
     stm = db.prepare(sql)
     res = stm.execute(id_ban)
     list = res.first if res.count > 0
@@ -52,8 +59,10 @@ class Banhang < ModelBase
       str = str['id_ban']
       if str[0..7].to_s == DateTime.now.strftime("%Y%m%d").to_s
         num = str[8...str.length]
-        if num.to_i < 10
+        if num.to_i < 9
           num = "0" << (num.to_i + 1).to_s
+        else
+          num = (num.to_i + 1).to_s
         end
         str = DateTime.now.strftime("%Y%m%d").to_s  + num
       else

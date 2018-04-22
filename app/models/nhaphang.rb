@@ -8,7 +8,9 @@ class Nhaphang < ModelBase
   attr_accessor *Fields
   def initialize(params={})
     set(params)
-    @ngayban ||= DateTime.now
+    @ngaynhap ||= DateTime.now
+    @thanhtien =  params['thanhtien'].present? ? params['thanhtien'].to_s.gsub(/,/,'') : 0
+    @thanhtoan =  params['thanhtoan'].present? ? params['thanhtoan'].to_s.gsub(/,/,'') : ''
   end
   
   validates :id_nhap,
@@ -23,11 +25,11 @@ class Nhaphang < ModelBase
     :presence => {:message =>QLVLXaydung::Application.config.blank_msg}
   
   def self.getlist(db)
-    sql = " SELECT nh.id_nhap, nh.id_cungcap, nh.id_nguoidung, nd.tennguoidung, nh.id_thanhtoan, nh.ngayban, nh.thanhtien, nh.thanhtoan, nh.ghichu 
+    sql = " SELECT nh.id_nhap, nh.id_cungcap, cc.tennhacung, nh.id_nguoidung, nd.tennguoidung, nh.id_thanhtoan, nh.ngaynhap, nh.thanhtien, nh.thanhtoan, nh.ghichu 
             FROM nhaphang nh
             JOIN nhacungcap cc ON cc.id_cungcap = nh.id_cungcap 
-            JOIN nguoidung nd ON nd.id_nguoidung = bh.id_nguoidung
-            ORDER BY bh.id_nhap DESC"
+            JOIN nguoidung nd ON nd.id_nguoidung = nh.id_nguoidung
+            ORDER BY nh.id_nhap DESC"
     stm = db.prepare(sql)
     res = stm.execute
     list = []
@@ -37,7 +39,7 @@ class Nhaphang < ModelBase
   
   
   def self.find_id(db, id_nhap)
-    sql = " SELECT id_nhap, id_cungcap, id_nguoidung, id_thanhtoan, ngayban, thanhtien, thanhtoan, ghichu FROM nhaphang WHERE id_nhap = ?"
+    sql = " SELECT id_nhap, id_cungcap, id_nguoidung, id_thanhtoan, ngaynhap, thanhtien, thanhtoan, ghichu FROM nhaphang WHERE id_nhap = ?"
     stm = db.prepare(sql)
     res = stm.execute(id_nhap)
     list = res.first if res.count > 0
@@ -52,8 +54,10 @@ class Nhaphang < ModelBase
       str = str['id_nhap']
       if str[0..7].to_s == DateTime.now.strftime("%Y%m%d").to_s
         num = str[8...str.length]
-        if num.to_i < 10
+        if num.to_i < 9
           num = "0" << (num.to_i + 1).to_s
+        else
+          num = (num.to_i + 1).to_s
         end
         str = DateTime.now.strftime("%Y%m%d").to_s  + num
       else
@@ -66,17 +70,17 @@ class Nhaphang < ModelBase
   end
   
   def save(db)
-    sql = " INSERT INTO nhaphang(id_cungcap, id_nguoidung, id_thanhtoan, ngayban, thanhtien, thanhtoan, ghichu, id_ban) 
+    sql = " INSERT INTO nhaphang(id_cungcap, id_nguoidung, id_thanhtoan, ngaynhap, thanhtien, thanhtoan, ghichu, id_nhap) 
             VALUES( ?, ?, ?, ?, ?, ?, ?, ?)"
     stm = db.prepare(sql)
-    stm.execute(@id_cungcap, @id_nguoidung, @id_thanhtoan, @ngayban, @thanhtien, @thanhtoan, @ghichu, @id_ban)
+    stm.execute(@id_cungcap, @id_nguoidung, @id_thanhtoan, @ngaynhap, @thanhtien, @thanhtoan, @ghichu, @id_nhap)
     stm.close
   end
   
   def update(db)
-    sql = "UPDATE nhaphang SET id_cungcap = ?, id_nguoidung = ?, id_thanhtoan = ?, thanhtien = ?, thanhtoan = ?, ghichu= ? WHERE id_ban = ?"
+    sql = "UPDATE nhaphang SET id_cungcap = ?, id_nguoidung = ?, id_thanhtoan = ?, thanhtien = ?, thanhtoan = ?, ghichu= ? WHERE id_nhap = ?"
     stm = db.prepare(sql)
-    stm.execute(@id_cungcap, @id_nguoidung, @id_thanhtoan, @thanhtien, @thanhtoan, @ghichu, @id_ban)
+    stm.execute(@id_cungcap, @id_nguoidung, @id_thanhtoan, @thanhtien, @thanhtoan, @ghichu, @id_nhap)
     stm.close
   end
   

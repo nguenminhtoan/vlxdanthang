@@ -2,10 +2,14 @@
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
 
+
 class Nhanvien < ModelBase
+  require 'digest/md5'
+  
   Fields = [:id_nguoidung, :id_quyen, :tennguoidung, :ngaysinh, :gioitinh, :sdt, :email, :ghichu, :matkhau]
   
   attr_accessor *Fields
+  attr_accessor  :tenquyen
   def initialize(params={})
     set(params)
     @ngaysinh ||= DateTime.new(1990,01,01)
@@ -41,6 +45,16 @@ class Nhanvien < ModelBase
           JOIN phanquyen q ON q.id_quyen = n.id_quyen WHERE n.id_nguoidung = ?"
     stm = db.prepare(sql)
     res = stm.execute(id_nguoidung)
+    list = res.first if res.count > 0
+    stm.close
+    list
+  end
+  
+  def self.login(db, id_nguoidung, matkhau)
+    sql = " SELECT #{Fields.map{|c| 'n.'<<c.to_s}.join(', ')}, tenquyen FROM nguoidung n
+          JOIN phanquyen q ON q.id_quyen = n.id_quyen WHERE n.id_nguoidung = ? AND n.matkhau = ?"
+    stm = db.prepare(sql)
+    res = stm.execute(id_nguoidung, Digest::MD5.hexdigest(matkhau))
     list = res.first if res.count > 0
     stm.close
     list
