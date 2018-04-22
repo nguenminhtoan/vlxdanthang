@@ -42,4 +42,26 @@ class KhachhangController < ApplicationController
     redirect_to '/khachhang'
   end
   
+  def thanhtoan
+    
+    @search = params[:page].present? ? params[:page] : {'current'=>0,'limit'=>25, 'sort'=>'1', 'up_down'=>'ASC'}
+    
+    @search['up_down'] = session[:current] if session[:current].present?
+    @search['limit'] = session[:limit] if session[:limit].present?
+    @search['sort'] = session[:sort] if session[:sort].present?
+    @search['up_down'] = session[:up_down] if session[:up_down].present?
+    
+    sql = " SELECT kh.id_khachhang, tenkhachhang, sdt, ngayban, tong, no FROM khachhang kh
+          JOIN (SELECT * FROM ( SELECT id_khachhang, ngayban, SUM(thanhtien) as tong, SUM(thanhtoan) as no FROM banhang GROUP BY id_khachhang ORDER BY ngayban ) as nohang) tk  ON tk.id_khachhang = kh.id_khachhang
+          GROUP BY kh.id_khachhang
+    "
+    
+    stm = @db.prepare(sql)
+    @list = []
+    res = stm.execute
+    res.each{|v| @list << v} if res.count > 0
+    stm.close
+    
+  end
+  
 end

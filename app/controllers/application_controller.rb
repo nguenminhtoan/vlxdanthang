@@ -25,11 +25,50 @@ class ApplicationController < ActionController::Base
       @db.close
     end
     
+    @page_name = controller_name 
+    
+    
+    if !session[:id_user].present? && controller_name != 'dangnhap'
+      redirect_to '/dangnhap'
+    else
+      getIcon(@page_name)
+    end
+    
+    
+    if session[:id_user].present?
+      @info = Nhanvien.new(Nhanvien.find_id(@db,session[:id_user]))
+      @time = session[:date_login] if session[:date_login].present?
+    end
 
     
   end
   
   
+  def getIcon(name)
+    case name
+    when 'hanghoa', 'loaihang', 'donvi','loaithanhtoan'
+        @icon = "fa fa-navicon"
+        @title = "Danh mục hàng hóa"
+    when 'banhang'
+        @icon = "glyphicon glyphicon-usd"
+        @title = "Bán hàng"
+    when 'nhaphang'
+        @icon = "fa fa-product-hunt"
+        @title = "Nhập hàng"
+    when 'khohang'
+        @icon = "fa fa-database"
+        @title = "Kho hàng"
+    when "dashboard"
+        @icon = "glyphicon glyphicon-dashboard"
+        @title = "Thống kê"
+    when "khachhang"
+        @icon = "glyphicon glyphicon-user"
+        @title = "Khách hàng"
+    when "nhacungcap"
+        @icon = "fa fa-gears"
+        @title = "Nhà cung cấp"
+    end
+  end
   
   
   

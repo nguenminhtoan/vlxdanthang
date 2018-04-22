@@ -33,7 +33,7 @@ class DonviController < ApplicationController
       item.valid?
 
       item.errors.full_messages.each do |message|
-        @errors << "Mã loại #{item.id_loai} #{message}"
+        @errors << "Mã loại #{item.id_donvi} #{message}"
       end
     end
 
