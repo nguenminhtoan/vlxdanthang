@@ -1,0 +1,87 @@
+<script>
+  function reload(){
+    window.location.reload("/hanghoa/new");
+  }
+  
+</script>
+<style>
+.field-error {
+    background-color: pink !important;
+}
+</style>
+<div class="box">
+    <header class="dark">
+        <div class="icons"><a href="/hanghoa" class="btn btn-primary"><i class="glyphicon glyphicon-chevron-left"></i>Trở Lại</a></div>
+        <h5>Thêm Sản Phẩm</h5>
+    </header>
+    <div class="body">
+        <%= form_for(@new, :url=>{:action=>'save'}, :html => {:class=>'form-horizontal'}) do |f| %>
+            <%= f.hidden_field :id_cuahang, value: "CH1" %>
+            <div class="form-group">
+                <%= f.label :id_hanghoa, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                        <%= f.text_field :id_hanghoa, :class=>fieldError(@new.errors[:id_hanghoa].any?, "form-control"), placeholder: "Mã hàng" %>
+                </div>
+                <span class="error right"><%=@new.errors[:id_hanghoa].first%></span>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :tenhang, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                        <%= f.text_field :tenhang, :class=>fieldError(@new.errors[:tenhang].any?, "form-control"), :placeholder=>"Tên hàng hóa" %>
+                   
+                </div>
+                <span class="error right"><%=@new.errors[:tenhang].first%></span>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :id_loai, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                        <%= f.select :id_loai , options_for_select(@loai.collect{|v| [v['tenloai'],v['id_loai']]}, @new.id_loai), {} , :class=>fieldError(@new.errors[:id_loai].any?, "form-control") %>
+                    
+                </div>
+                <span class="error right"><%=@new.errors[:id_loai].first%></span>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :thongso, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                        <%= f.text_field :thongso, :class=>fieldError(@new.errors[:id_donvi].any?, "form-control"), placeholder: "Quy cách"  %>
+                    
+                </div>
+                <span class="error right"><%=@new.errors[:thongso].first%></span>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :id_donvi, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                        <%= f.select :id_donvi , options_for_select(@donvi.collect{|v| [v['donvi'],v['id_donvi']]}, @new.id_donvi), {} , :class=>fieldError(@new.errors[:id_donvi].any?, "form-control") %>
+                    
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :giaban, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                        <%= f.number_field :giaban, :class=>fieldError(@new.errors[:giaban].any?, "form-control"), :min => '1'%>
+                
+                </div>
+                <span class="error right"><%=@new.errors[:giaban].first%></span>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :ghichu, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                        <%= f.text_area :ghichu, :class=>'form-control', :rows=> 4, cols: 50 %>
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <div class="col-lg-8 pull-right">
+                  <button name="huy" type="button" onclick="reload();" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i>Hủy Bỏ</button>
+                  <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i>Lưu Lại</button>
+                </div>
+            </div>
+        <%end%>
+    </div>
+</div>
