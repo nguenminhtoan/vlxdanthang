@@ -15,114 +15,58 @@ function DeleteRow() {
 
 <div class="box">
     <header>
-        <div class="icons"><a href="/nhaphang/new" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>Thêm Mới</a></div>
-        <h5>Sản Phẩm</h5>
+        <div class="icons"><a href="/nhanvien/new" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>Thêm Mới</a></div>
+        <h5>Danh Mục Khách Hàng</h5>
     </header>
 
     <div class="body">
-        <div class="dataTables_wrapper">
-            <div class="row">
-              <form name="InputSearch" method="POST" >
-                <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-                <%= hidden_field_tag "page[sort]", @search['sort'] %>
-                <%= hidden_field_tag 'page[up_down]', @search['up_down']  %>
-                <%= hidden_field_tag "page[current]", @search['current'] %>
-                <div class="col-sm-6">
-                    <div class="dataTables_length" id="dataTable_length">
-                        <label>Hiển thị 
-                            <%= select_tag "page[limit]",options_for_select([10,25,50,100], @search['limit']), class: "form-control input-sm"%> dòng
-                        </label>
-                    </div></div>
-                <div class="col-sm-6">
-                    <div id="dataTable_filter" class="dataTables_filter">
-                        <label>
-                            Tìm kiếm:<%= text_field_tag "page[search]", @search['search'], class: "form-control input-sm", placeholder: "Mã, tên sản phẩm" %>
-                        </label>
-                    </div>
-                </div>
-              </form>
-            </div>
+        <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
             <div class="row">
                 <div class="col-sm-12">
                     <table id="dataTable" class="table table-bordered table-hover table-striped dataTable">
-                        <% 
-                        columns = []
-                        columns << { column: :stt, name: 'STT', width: '4%'}
-                        columns << { column: :id_nhap, name: 'Mã', width: '9%', sort: true}
-                        columns << { column: :nguoidaung, name: 'Người nhập', sort: true}
-                        columns << { column: :id_cungcap, name: 'Nhà cung',width: '12%', sort: true}
-                        columns << { column: :ngaynhap, name: 'Ngày nhập'}
-                        columns << { column: :thanhtien, name: 'Thành tiền',width: '12%'}
-                        columns << { column: :thanhtoan, name: 'Thanh toán', width: '12%', sort: true}
-                        columns << { column: :no, name: 'Nợ'}
-                        columns << { column: :ghichu, name: 'Ghi chú'}
-                        columns << { column: :chọn, name: 'Chọn', width: '5%'}
-
-                        %>
                         <thead>
                             <tr>
-                                <tr>
-                                <% columns.each_with_index do |c, index| %>
-                                  <% if c[:sort] %>
-                                    <% if @search['up_down'].to_s == "DESC" && @search['sort'].to_i == index %>
-                                      <th width="<%= c[:width] %>" <%= "class=sorting_desc"%> onclick="SortRow('<%= index %>','ASC');" >
-                                          <%= c[:name]  %>
-                                      </th>
-                                    <% elsif @search['up_down'].to_s == "ASC" && @search['sort'].to_i == index %>
-                                      <th width="<%= c[:width] %>" <%= "class=sorting_asc"%> onclick="SortRow('<%= index %>','DESC');" >
-                                          <%= c[:name]  %>
-                                      </th>
-                                    <% else %>
-                                      <th width="<%= c[:width] %>" <%= "class=sorting"%> onclick="SortRow('<%= index %>','DESC');" >
-                                          <%= c[:name]  %>
-                                      </th>
-                                    <% end %>
-                                  <% else %>
-                                    <th width="<%= c[:width] %>">
-                                        <%= c[:name]  %>
-                                    </th>
-                                  <% end %>
-                                <% end %>
-                            </tr>
+                                <th width="4%">Mã</th>
+                                <th width="15%">Tên người dùng</th>
+                                <th width="8%">Phái</th>
+                                <th width="8%">Nhóm</th>
+                                <th width="10%">Ngày sinh</th>
+                                <th width="8%">SĐT</th>
+                                <th width="10%">E-Mail</th>
+                                <th width="20%">Ghi chú</th>
+                                <th width="5%">Chọn</th>
                             </tr>
                         </thead>
                         <tbody id="table">
-                            <% @list.each.with_index(1) do |row, index| %>
-                            <tr>
-                                <td align="center"><%= index %></td>
-                                <td><%= row['id_nhap'] %></td>
-                                <td><%=row['tennguoidung'] %></td>
-                                <td align="center"><%=row['tennhacung'] %></td>
-                                <td><%= row['ngaynhap'].to_date.strftime("%d/%m/%Y") %></td>
-                                <td align="right"><b><%= number_to_currency(row['thanhtien'], :unit => '', :precision => 0, :format => "%n %u") %></b></td>
-                                <td align="right"><b><%= number_to_currency(row['thanhtoan'], :unit => '', :precision => 0, :format => "%n %u") %></b></td>
-                                <td align="right"><b><%= number_to_currency(row['thanhtien'].to_i-row['thanhtoan'], :unit => '', :precision => 0, :format => "%n %u") %></b></td>
-                                <td><%= row['ghichu'] %></td>
-                                <td align ="center">
-                                    <a href="/nhaphang/edit/<%= row['id_nhap'] %>" class="text-success" ><i class="glyphicon glyphicon-pencil"></i></a>
-                                </td>
-                            </tr>
-                            <% end %>
+                            <% @list.each do |val| %>
+                              <tr>
+                                  <td align="center"><%=val['id_nguoidung']%></td>
+                                  <td><%=val['tennguoidung']%></td>
+                                  <td>
+                                      <% if  val['gioitinh'].to_i == 1 %>
+                                          Nam
+                                      <% else %>
+                                          Nữ
+                                      <% end %>
+                                  </td>
+                                  <td><%=val['tenquyen'] %></td>
+                                  <td><%=val['ngaysinh']%></td>
+                                  <td><%=val['sdt']%></td>
+                                  <td><%=val['email']%></td>
+                                  <td><%=val['ghichu']%></td>
+                                  <td align="center">
+                                      <a href="/nhanvien/edit/<%=val['id_nguoidung']%>" class="text-success"><i class="glyphicon glyphicon-pencil"></i></a>
+                                      <a href="/nhanvien/delete/<%=val['id_nguoidung']%>" onclick="return DeleteRow();" class="text-danger"><i class="glyphicon glyphicon-trash"></i></a>
+                                  </td>
+                              </tr>
+                            <%end%>
+
                         </tbody>                
                     </table>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-5">
-                    <div class="dataTables_info"></div>     
-                </div>
-                <div class="col-sm-7">
-                    <div class="dataTables_paginate paging_simple_numbers">
-                        <ul class="pagination">
-                            
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-    <script src="/stylesheets/jquery.js"></script>
 
 

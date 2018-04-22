@@ -1,393 +1,108 @@
-<%#
-# To change this license header, choose License Headers in Project Properties.
-# To change this template file, choose Tools | Templates
-# and open the template in the editor.
-%>
-
-
-<script src="/javascripts/jquery.auto-complete.js"></script>
-<style>
-  .autocomplete-suggestions {
-    text-align: left; cursor: default; border: 1px solid #ccc; border-top: 0; background: #fff; box-shadow: -1px 1px 3px rgba(0,0,0,.1);
-
-    /* core styles should not be changed */
-    position: absolute; display: none; z-index: 9999; max-height: 254px; overflow: hidden; overflow-y: auto; box-sizing: border-box;
+<script>
+function reload(){
+  window.location.reload("/nhanvien/new");
 }
-.autocomplete-suggestion { position: relative; padding: 0 .6em; line-height: 23px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1.02em; color: #333; }
-.autocomplete-suggestion b { font-weight: normal; color: #1f8dd6; }
-.autocomplete-suggestion.selected { background: #f0f0f0; }
-.product{
-    width: 100%;
-}
-
-.field-error{
-  background-color: pink;
-}
-
-.price{
-  text-align: right;
-}
-
-.number{
-  text-align: center;
-}
-  
-</style>
-
- <%= form_for(@new, :url=>{:action=>'save'}) do |f| %>
-<div class="row">
-    <!--BEGIN SELECT        -->
-    <div class="col-lg-8">
-        <div class="box dark">
-            <header>
-                <h5>Danh sách hàng hóa</h5>
-            </header>
-            <div id="div-1" class="body collapse in" aria-expanded="true" style="">
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="control-label col-lg-2">Tìm kiếm</label>
-                        <div class="col-lg-9">
-                            <input id="myInput" type="text" class="form-control" autofocus autocomplete="off" placeholder="Mã hàng, tên hàng hoặc giá bán">
-                        </div>
+</script>
+<div class="box">
+    <header class="dark">
+        <div class="icons"><a href="/nhanvien" class="btn btn-primary"><i class="glyphicon glyphicon-chevron-left"></i>Trở Lại</a></div>
+        <h5>Thêm Nhân Viên</h5>
+    </header>
+    <div class="body">
+        
+        <%= form_for(@new, :url=>{:action=>'save'}, :html => {:class=>'form-horizontal'}) do |f| %>
+            <div class="form-group">
+                <%= f.label :id_nguoidung, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.text_field :id_nguoidung, :class=>fieldError(@new.errors[:id_nguoidung].any?, "form-control"), :placeholder=>"mã nhân viên" %>
                     </div>
-                    <table id="myTable" class="table table-striped responsive-table">
-                        <thead>
-                            <tr>
-                                <th width="5%">STT</th>
-                                <th>Hàng hóa</th>
-                                <th width="15%">Giá vốn</th>
-                                <th width="5%">Số lượng</th>
-                                <th width="15%">Thành tiền</th>
-                                <th width="15%">Giá bán</th>
-                                <th width="5%"></th>
-                            </tr>
-                        </thead>
-                        <tbody >
-                            <% @hanghoa.each.with_index(1) do |row, index| %>
-                              <tr>
-                                <td align="center"><%= index %></td>
-                                <td><%= hidden_field_tag "list[][id_hanghoa]", row.id_hanghoa  %><b><%= row.id_hanghoa %></b><br/><%= row.tenhang %></td>
-                                <td><%= text_field_tag "list[][dongia]", number_to_currency( row.dongia, :unit => '', :precision => 0, :format => "%n %u"), :class=>fieldError(row.errors[:dongia].any?, "product price"), :onkeyup=>"priceFormatBan(this);"%></td>
-                                <td><%= text_field_tag "list[][soluong]", row.soluong, :class=>fieldError(row.errors[:soluong].any?, "product number"), :onkeyup=>"Numbers(this);"%></td>
-                                <td align="right" style="font-weight:700"><%= number_to_currency( row.soluong.to_i*row.dongia.to_i, :unit => '', :precision => 0, :format => "%n %u") %></td>
-                                <td><%= text_field_tag "list[][giaban]", number_to_currency( row.giaban, :unit => '', :precision => 0, :format => "%n %u"), :class=>fieldError(row.errors[:giaban].any?, "product price"), :onkeyup=>"priceFormatMua(this);"%></td>
-                                <td align="center"><a href="javascriot:void(0);" class="text-danger" onclick="DeleteRow(this)"><i class="glyphicon glyphicon-trash"></i></a></td>
-                              </tr>
-                            <% end %>
-                        </tbody>                
-                    </table>
-                </form>
+                </div>
+                <span class="error right"><%=@new.errors[:id_nguoidung].first%></span>
             </div>
-        </div>
-    </div>
-    
-    <div class="col-lg-4">
-        <div class="box dark">
-            <header>
-                <h5>Hóa đơn nhập hàng</h5>
-            </header>
-            <div class="body collapse in form-horizontal">
-                    <div class="form-group">
-                        <label class="col-lg-12">Mã hóa đơn</label>
-
-                        <div class="col-lg-12">
-                            <%= f.text_field :id_nhap, :value=> @key, :class=>fieldError(@new.errors[:id_nhap].any?, "form-control"), :readonly=>"" %>
-                        </div>
+            
+            <div class="form-group">
+                <%= f.label :tennguoidung, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.text_field :tennguoidung, :class=>fieldError(@new.errors[:tennguoidung].any?, "form-control"), :placeholder=>"Nguyễn Văn A" %>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="col-lg-12">Người nhập</label>
-
-                        <div class="col-lg-12">
-                            <%= text_field_tag :nguoinhap, @info.tennguoidung, :class=>fieldError(@new.errors[:id_nguoidung].any?, "form-control"), :readonly=>"" %>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="col-lg-12">Mã Nhà Cung</label>
-
-                        <div class="col-lg-12">
-                            <div class="input-group">
-                                <%= f.select :id_cungcap, options_for_select(@cungcap.collect{|v| [v['id_cungcap'],v['id_cungcap'],data:{name: v['tennhacung']}]}, @new.id_cungcap), {}, :class=>"form-control" %>
-                                <span class="input-group-addon"><a >Thêm</a></span>
-                            </div>
-                        </div>
-                    </div>
-                
-                    
-                    <div class="form-group" >
-                        <label class=" col-lg-12">Ngày nhập</label>
-                        <div class="col-lg-12">
-                            <%= f.date_field :ngaynhap, :value=>@new.ngaynhap.to_date.strftime("%Y-%m-%d"), :class=>fieldError(@new.errors[:id_thanhtoan].any?,"form-control") %>
-                        </div>
-                    </div>
-                    
-
-                    <div class="form-group">
-                        <label class="col-lg-12">Ghi chú</label>
-
-                        <div class="col-lg-12">
-                            <%= f.text_area :ghichu,  :size=>"5", :class=>"form-control" %>
-                        </div>
-                    </div>
-                    
-                    <style>
-                        table thead tr th {
-                            text-align: left !important;
-                        }
-                        .right, .txtright{ text-align: right; padding: 2px; font-weight: 700; font-size: 24px}
-                    </style>
-                    
-                    <div class="form-group" >
-                        <label class=" col-lg-12">Hình thức</label>
-                        <div class="col-lg-12">
-                            <%= f.select :id_thanhtoan, options_for_select(@thanhtoan.collect{|v| [v['tenthanhtoan'],v['id_thanhtoan']]}),{}, :class=>fieldError(@new.errors[:id_thanhtoan].any?,"form-control") %>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="col-lg-12">Thành tiền</label>
-
-                        <div class="col-lg-12">
-                            <%= f.text_field :thanhtien,:value=>number_to_currency(@new.thanhtien.to_i, :unit => '', :precision => 0, :format => "%n %u"), :class=>fieldError(@new.errors[:thanhtien].any?, "form-control right"), :readonly=>"" %>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="col-lg-12">Thanh toán</label>
-
-                        <div class="col-lg-12">
-                            <%= f.text_field :thanhtoan, :value=>number_to_currency(@new.thanhtoan.to_i, :unit => '', :precision => 0, :format => "%n %u"), :class=>fieldError(@new.errors[:thanhtoan].any?,"form-control right"), :onkeyup=>"priceFormat(this);" %>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="col-lg-12">Nợ</label>
-
-                        <div class="col-lg-12">
-                            <%= text_field_tag "no", number_to_currency(@new.thanhtoan.to_i-@new.thanhtien.to_i, :unit => '', :precision => 0, :format => "%n %u"), :class=>'form-control right', :readonly=>"" %>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="col-lg-12">
-                            <button class="btn btn-primary">Thanh Toán</button>
-                        </label>
-                    </div>
+                </div>
+                <span class="error right"><%=@new.errors[:tennguoidung].first%></span>
             </div>
-        </div>
+        
+            <div class="form-group">
+                <%= f.label :gioitinh, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.select :gioitinh, options_for_select([["Nam",1],["Nữ",2]], @new.gioitinh),{}, :class=>'form-control' %>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :ngaysinh, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.date_field :ngaysinh, :value => @new.ngaysinh.to_date.strftime("%Y-%d-%m"), :class=>fieldError(@new.errors[:ngaysinh].any?, "form-control")%>
+                    </div>
+                </div>
+                <span class="error right"><%=@new.errors[:ngaysinh].first%></span>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :id_quyen, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.select :id_quyen , options_for_select(@quyen.collect{ |u| [u['tenquyen'], u['id_quyen']] }, @new.id_quyen), {}, :class=>fieldError(@new.errors[:id_quyen].any?, "form-control") %>
+                    </div>
+                </div>
+                <span class="error right"><%=@new.errors[:id_quyen].first%></span>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :sdt, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.number_field :sdt, :class=>'form-control', :placeholder=>"098 909 192" %>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :email, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <%= f.text_field :email, :class=>'form-control', :placeholder=>"email" %>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <%= f.label :ghichu, :class=>"control-label col-lg-4"%>
+                <div class="col-lg-4">
+                    <div class="input-group">
+                        <%= f.text_area :ghichu, :class=>'form-control', :rows => 5, :cols=> 100 %>
+                    </div>
+                </div>
+            </div>
+        
+        
+            <div class="form-group">
+                <div class="col-lg-6">
+                    <button type="button" onclick="reload();" class="btn btn-danger pull-right"><i class="glyphicon glyphicon-remove"></i>Hủy Bỏ</button>
+                </div>
+                <div class="col-lg-3">
+                    <button type="submit" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i>Lưu Lại</button>
+                </div>
+            </div>
+        <%end%>
     </div>
 </div>
-
-<% end %>
-<script>
-  
-function total(){
-  var tong = 0;
-  var tr = $("#myTable tr");
-  for(i=1;i<tr.length; i++){
-    tong = tong + Number(tr.eq(i).find('td:nth-child(5)').html().toString().replace(/,/g,''));
-  }
-  $("#nhaphang_thanhtien").val(tong.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
-  $("#no").val(($("#nhaphang_thanhtoan").val().toString().replace(/,/g,'')-tong).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
-};
-  
-  $('#myInput').autoComplete({
-    minChars: 1,
-    source: function(term, suggest){
-        term = term.toLowerCase();
-        var choices = <%= raw  @list.collect{|v| [v['id_hanghoa'],v['tenhang'],"#{v['giaban']}"]}  %>;
-        var suggestions = [];
-        for (i=0;i<choices.length;i++)
-            if (~(choices[i][0]+' '+choices[i][1]).toLowerCase().indexOf(term)) suggestions.push(choices[i]);
-        suggest(suggestions);
-    },
-    renderItem: function (item, search){
-        search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-        var re = new RegExp("(" + search.split(' ').join('|') + ")", "");
-        return '<div class="autocomplete-suggestion" data-id-hanghoa="'+item[0]+'" data-tenhang="'+item[1]+'" data-giaban="'+ item[2] +'" data-val="'+search+'"><b style="font-weight:700">'+item[0]+ '</b></br>'+item[1]+'</div>';
-    },
-    onSelect: function(e, term, item){
-      var table = $("#myTable tr");
-      var bool = 0;
-      for(i=1; i< table.length; i++){
-        if(item.data("id-hanghoa") == $("#myTable tr").eq(i).find('td:nth-child(2) input').val()){
-          bool = i;
-        }
-      }
-      if(bool == 0){
-        var html = '<tr>\n\
-                    <td align="center">'+ $("#myTable tr").length + '</td>  \n\
-                    <td><input type="hidden" class="product" name="list[][id_hanghoa]" value="'+ item.data("id-hanghoa") +'" ><b>'+ item.data("id-hanghoa") +"</b><br/>"+ item.data("tenhang") +'</td>\n\
-                    <td><input class="product price" onkeyup="priceFormatBan(this);" name="list[][dongia]" ></td>\n\
-                    <td><input class="product number" onkeyup="Numbers(this);" name="list[][soluong]" value="1" ></td>\n\
-                    <td align="right" style="font-weight:700"></td>\n\
-                    <td><input class="product price"  onkeyup="priceFormatMua(this);" name="list[][giaban]" value='+ item.data("giaban").toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,") +' ></td>\n\
-                    <td align="center"><a href="javascriot:void(0);" class="text-danger" onclick="DeleteRow(this)"><i class="glyphicon glyphicon-trash"></i></a></td>\n\
-                  </tr>';
-        $("#myTable").append(html);
-        $("#myInput").val('');
-        total();
-      }
-      
-    }
-  });
-  
-  function priceFormat(event){
-    // 1.
-      var selection = window.getSelection().toString();
-      if ( selection !== '' ) {
-          return;
-      }
-
-      // 2.
-      if ( $.inArray( event.keyCode, [38,40,37,39] ) !== -1 ) {
-          return;
-      }
-
-      var $this = $( event );
-      var input = $this.val();
-
-      // 2
-      var input = input.replace(/[\D\s\._\-]+/g, "");
-
-      // 3
-      input = input ? parseInt( input, 10 ) : 0;
-      $("#no").val((input-$("#nhaphang_thanhtien").val().toString().replace(/,/g,'')).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
-      
-      $this.val( function() {
-        return ( input === 0 ) ? "" : input.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
-      } );
-  }
-  
-  function Numbers(event){
-    // 1.
-      var selection = window.getSelection().toString();
-      if ( selection !== '' ) {
-          return;
-      }
-
-      // 2.
-      if ( $.inArray( event.keyCode, [38,40,37,39] ) !== -1 ) {
-          return;
-      }
-
-      var $this = $( event );
-      var input = $this.val();
-
-      // 2
-      var input = input.replace(/[\D\s\._\-]+/g, "");
-
-      // 3
-      input = input ? parseInt( input, 10 ) : 0;
-      $this.val( function() {
-        return ( input === 0 ) ? "" : input;
-      } );
-      var $this = $(event);
-      var price = $this.val()*($this.closest('tr').find('td:nth-child(3) input').val().replace(/,/g, ''));
-      $this.closest('tr').find('td:nth-child(5)').html(price.toLocaleString( "en-US" )); 
-      total();
-  }
-  
-  function priceFormatBan(event){
-    // 1.
-    var selection = window.getSelection().toString();
-    if ( selection !== '' ) {
-        return;
-    }
- 
-    // 2.
-    if ( $.inArray( event.keyCode, [38,40,37,39] ) !== -1 ) {
-        return;
-    }
-    
-    var $this = $( event );
-    var input = $this.val();
-
-    // 2
-    var input = input.replace(/[\D\s\._\-]+/g, "");
-
-    // 3
-    input = input ? parseInt( input, 10 ) : 0;
-
-    // 4
-    $this.val( function() {
-        return ( input === 0 ) ? "" : input.toLocaleString( "en-US" );
-    } );
-    var price = ($this.val().replace(/,/g, ''))*$this.closest('tr').find('td:nth-child(4) input').val();
-    $this.closest('tr').find('td:nth-child(5)').html(price.toLocaleString( "en-US" )); 
-    total();
-  };
-  function priceFormatMua(event){
-    // 1.
-    var selection = window.getSelection().toString();
-    if ( selection !== '' ) {
-        return;
-    }
- 
-    // 2.
-    if ( $.inArray( event.keyCode, [38,40,37,39] ) !== -1 ) {
-        return;
-    }
-    
-    var $this = $( event );
-    var input = $this.val();
-
-    // 2
-    var input = input.replace(/[\D\s\._\-]+/g, "");
-
-    // 3
-    input = input ? parseInt( input, 10 ) : 0;
-
-    // 4
-    $this.val( function() {
-        return ( input === 0 ) ? "" : input.toLocaleString( "en-US" );
-    } );
-  };
-
-function DeleteRow(name){
-  $(name).closest('tr').remove();
-  var tong = 0;
-  $("#order tr").each(function(){
-    tong += Number($(this).find('td:nth-child(4) input').val())*$(this).find('td:nth-child(5) input').val();
-  });
-  $("#banhang_thanhtien").val(tong.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
-  total();
-}
-
-function myAddCart(){
-  var table = $("#myTable tr");
-  table.each(function(){
-    var check = $(this).find('td:nth-child(5) input');
-    if (check.is(':checked')){
-      var html = check.closest('tr').html().replace(/checkbox/g,'text');
-      html += '<td><button type="button" onclick="DeleteRow(this)"></button></td>';
-      $("#order").append('<tr>'+html+'</tr>');
-      check.closest('tr').remove();
-    }
-  });
-  var tong = 0;
-  $("#order tr").each(function(){
-    tong += Number($(this).find('td:nth-child(4) input').val())*$(this).find('td:nth-child(5) input').val();
-  });
-  $("#banhang_thanhtien").val(tong.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
-}
-
-
-function ChangeNumber(){
-  var tong = 0;
-  $("#order tr").each(function(){
-    tong += Number($(this).find('td:nth-child(4) input').val())*$(this).find('td:nth-child(5) input').val();
-  });
-  $("#banhang_thanhtien").val(tong.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
-}
-
-$("#banhang_id_khachhang").change(function(){
-  $("#tenkhachhang").val($(this).find("option select").data('name'));
-});
-
-$("#banhang_thanhtoan").on('change',function(){
-  $("#tienthoi").val(($("#banhang_thanhtoan").val()-Number($("#banhang_thanhtien").val().replace(",",''))).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
-});
-
-</script>
